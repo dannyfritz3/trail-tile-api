@@ -1,0 +1,189 @@
+{
+    "Afton Alps": {
+        "location": "Hastings",
+        "data-rid": "",
+        "reimtbX": "-10329107",
+        "reimtbY": "5606210",
+        "trail_id": "0"
+    },
+    "Battle Creek": {
+        "location": "St. Paul",
+        "data-rid": "5538",
+        "reimtbX": "-10354896",
+        "reimtbY": "5611554",
+        "trail_id": "1"
+    },
+    "Monticello": {
+        "location": "Monticello",
+        "data-rid": "13706",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "2"
+    },
+    "Carver Lake": {
+        "location": "Woodbury",
+        "data-rid": "9243",
+        "reimtbX": "-10350542",
+        "reimtbY": "5606186",
+        "trail_id": "3"
+    },
+    "Cottage Grove Bike Park": {
+        "location": "Cottage Grove",
+        "data-rid": "",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "4"
+    },
+    "Elm Creek": {
+        "location": "Maple Grove",
+        "data-rid": "5543",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "5"
+    },
+    "Hillside Park": {
+        "location": "Elk River",
+        "data-rid": "7593",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "6"
+    },
+    "Lake Rebecca": {
+        "location": "Hastings",
+        "data-rid": "12004",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "7"
+    },
+    "Lebanon Hills": {
+        "location": "Eagan",
+        "data-rid": "3438",
+        "reimtbX": "-10374662",
+        "reimtbY": "5586981",
+        "trail_id": "8"
+    },
+    "MN River Bottoms": {
+        "location": "Bloomington",
+        "data-rid": "25053",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "9"
+    },
+    "Murphy Hanrehan": {
+        "location": "Savage",
+        "data-rid": "7646",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "10"
+    },
+    "Salem Hills": {
+        "location": "Inver Grove Heights",
+        "data-rid": "12008",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "11"
+    },
+    "Terrace Oaks": {
+        "location": "Burnsville",
+        "data-rid": "12011",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "12"
+    },
+    "Theodore Wirth": {
+        "location": "Golden Valley",
+        "data-rid": "9224",
+        "reimtbX": "-10389802",
+        "reimtbY": "5618312",
+        "trail_id": "13"
+    },
+    "7-Mile": {
+        "location": "Minneapolis",
+        "data-rid": "",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "14"
+    },
+    "Fort LeHillier": {
+        "location": "Mankato",
+        "data-rid": "",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "15"
+    },
+    "Holzinger Lodge": {
+        "location": "Winona",
+        "data-rid": "10305",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "16"
+    },
+    "Mt. Kato": {
+        "location": "Mankato",
+        "data-rid": "22512",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "17"
+    },
+    "Memorial Trail": {
+        "location": "Red Wing",
+        "data-rid": "13282",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "18"
+    },
+    "Grand Rapids": {
+        "location": "Grand Rapids",
+        "data-rid": "14550",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "19"
+    },
+    "Jail Trail": {
+        "location": "St Cloud",
+        "data-rid": "7592",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "20"
+    },
+    "Milaca": {
+        "location": "Milaca",
+        "data-rid": "",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "21"
+    },
+    "Hartley Park": {
+        "location": "Duluth",
+        "data-rid": "7575",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "22"
+    },
+    "Piedmont Trail": {
+        "location": "Duluth",
+        "data-rid": "9224",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "23"
+    },
+    "Whitetail Ridge": {
+        "location": "River Falls, WI",
+        "data-rid": "19492",
+        "reimtbX": "-",
+        "reimtbY": "",
+        "trail_id": "24"
+    },
+    "Woolly Trail": {
+        "location": "St. Croix, WI",
+        "data-rid": "19492",
+        "reimtbX": "-",
+        "reimtbY": "25"
+    },
+    "Levis Trow": {
+        "location": "Neillsville, WI",
+        "data-rid": "12627",
+        "reimtbX": "-",
+        "reimtbY": "26"
+    }
+}
