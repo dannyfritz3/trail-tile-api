@@ -20,9 +20,13 @@ def parseTimestamp(timestamp):
                 return "Yesterday"
             else:
                 return "%d days ago" % (today.day - timestamp_day)
+        elif today.month - timestamp_month == 1:
+            days = 31 - timestamp_day + today.day;
+            return "%d days ago" % (days)
         else:
             return "%d months ago" % (today.month - timestamp_month)
     elif today.year - timestamp_year == 1:
-        return "%d months ago" % (12 - timestamp_month + today.month)
+        months = 12 - timestamp_month + today.month
+        return "%d months ago" % (months)
     else:
         return "%d years ago" % (today.year - timestamp_year)

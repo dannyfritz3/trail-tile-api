@@ -4,12 +4,13 @@ var app = express();
 const port = process.env.PORT || 4000;
 var bodyParser = require('body-parser');
 var trail_data;
+var dbClient;
 
 async function connectToDb() {
     const uri = 'mongodb+srv://dbUser:1234password@morc-trail-cluster-2oaql.gcp.mongodb.net/test?retryWrites=true&w=majority';
-    const client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
-    await client.connect();
-    trail_data = await client.db('trail_data').collection('trails').find({}).toArray();
+    dbClient = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+    dbClient = await dbClient.connect();
+    trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
 }
 
 connectToDb();
@@ -31,6 +32,43 @@ app.get("/trails", (req, res, next) => {
     connectToDb();
     console.log(new Date().toString() + ": Request for all trails received.")
     res.json(trail_data);
+});
+
+//get bulliten board for a specific trail
+app.get("/getBulletinBoard/:trailId", (req, res, next) => {
+    var trailId = req.params.trailId;
+    var collection = dbClient.db('bulletindb').collection('bulletin-boards');
+    collection.findOne({trail_id: trailId}).then(document => {
+        if(!document) {
+            res.json({});
+        } else {
+            res.json(document.bulletinPosts);
+        }
+    });
+    console.log("Get bulletin board requested.");
+});
+
+//post a message to a trail's bulletin board
+app.post("/postBulletinMessage/:trailId", (req, res, next) => {
+    var trailId = req.params.trailId;
+    var bulletinPost = req.body;
+    var collection = dbClient.db('bulletindb').collection('bulletin-boards');
+    collection.findOne({ "trail_id": trailId }).then(document => {
+        if (!document) {
+            console.log("Document doesn't exist.\nCreating new document.");
+            collection.insertOne({
+                trail_id: trailId,
+                bullitenPosts: bulletinPost
+            });
+        } else {
+            collection.updateOne(
+                { trail_id: trailId },
+                { $push: { bulletinPosts: bulletinPost } }
+            );
+            console.log("Document updated.")
+        }
+    });
+    console.log("Post request recieved: " + req.body);
 });
 
 //get specific trail based on id
