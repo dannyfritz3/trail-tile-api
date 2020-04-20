@@ -22,6 +22,9 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
+const printTimestampMessage = (message) => {
+    console.log(new Date().toString() + ": " + message);
+}
 //ping test
 app.get("/ping", (req, res, next) => {
     res.sendStatus(200);
@@ -30,7 +33,7 @@ app.get("/ping", (req, res, next) => {
 //get all trails
 app.get("/trails", (req, res, next) => {
     connectToDb();
-    console.log(new Date().toString() + ": Request for all trails received.")
+    printTimestampMessage("Request for all trails received.");
     res.json(trail_data);
 });
 
@@ -45,7 +48,7 @@ app.get("/getBulletinBoard/:trailId", (req, res, next) => {
             res.json(document.bulletinPosts);
         }
     });
-    console.log("Get bulletin board requested.");
+    printTimestampMessage("Get bulletin board requested.");
 });
 
 //post a message to a trail's bulletin board
@@ -55,26 +58,26 @@ app.post("/postBulletinMessage/:trailId", (req, res, next) => {
     var collection = dbClient.db('bulletindb').collection('bulletin-boards');
     collection.findOne({ "trail_id": trailId }).then(document => {
         if (!document) {
-            console.log("Document doesn't exist.\nCreating new document.");
+            printTimestampMessage("Document doesn't exist.\nCreating new document.");
             collection.insertOne({
                 trail_id: trailId,
-                bullitenPosts: bulletinPost
+                bulletinPosts: [bulletinPost]
             });
         } else {
             collection.updateOne(
                 { trail_id: trailId },
                 { $push: { bulletinPosts: bulletinPost } }
             );
-            console.log("Document updated.")
+            printTimestampMessage("Document updated.")
         }
     });
-    console.log("Post request recieved: " + req.body);
+    printTimestampMessage("Post request recieved: " + req.body);
 });
 
 //get specific trail based on id
 app.get("/trails/:trailId", (req, res) => {
     connectToDb();
-    console.log(new Date().toString() + ": Request for trail " + req.params.trailId + " received.")
+    printTimestampMessage("Request for trail " + req.params.trailId + " received.")
     var trail = trail_data.find(trail => trail.trail_id == req.params.trailId);
     if(trail) {
         res.json(trail);
