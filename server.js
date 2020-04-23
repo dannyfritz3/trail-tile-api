@@ -1,3 +1,4 @@
+var axios = require('axios');
 var express = require('express');
 const { MongoClient } = require('mongodb');
 var app = express();
@@ -84,6 +85,25 @@ app.get("/trails/:trailId", (req, res) => {
     } else {
         res.send("No trail found with the id: " + req.params.trailId);
     }
+});
+
+app.get("/getWeatherData/:location", (req, res) => {
+    var startDate = '2020-04-12T00:00:00';
+    var endDate = '2020-04-13T00:00:00';
+    var location = req.params.location;
+    var key = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
+
+    axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` + 
+                `?location=${location}` + 
+                `&aggregateHours=24` + 
+                `&startDateTime=${startDate}` + 
+                `&endDateTime=${endDate}` + 
+                `&key=${key}` + 
+                `&contentType=json`).then((response) => {
+        var responseObject = response.data.locations[Object.keys(response.data.locations)[0]];
+        res.send(responseObject);
+    });
+
 });
 
 app.listen(port, () => {
