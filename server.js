@@ -9,7 +9,7 @@ var dbClient;
 
 async function connectToDb() {
     const uri = 'mongodb+srv://dbUser:1234password@morc-trail-cluster-2oaql.gcp.mongodb.net/test?retryWrites=true&w=majority';
-    dbClient = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+    dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     dbClient = await dbClient.connect();
     trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
 }
@@ -21,7 +21,7 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const printTimestampMessage = (message) => {
     console.log(new Date().toString() + ": " + message);
@@ -32,8 +32,8 @@ app.get("/ping", (req, res, next) => {
 });
 
 //get all trails
-app.get("/trails", (req, res, next) => {
-    connectToDb();
+app.get("/trails", async (req, res, next) => {
+    await connectToDb();
     printTimestampMessage("Request for all trails received.");
     res.json(trail_data);
 });
@@ -42,8 +42,8 @@ app.get("/trails", (req, res, next) => {
 app.get("/getBulletinBoard/:trailId", (req, res, next) => {
     var trailId = req.params.trailId;
     var collection = dbClient.db('bulletindb').collection('bulletin-boards');
-    collection.findOne({trail_id: trailId}).then(document => {
-        if(!document) {
+    collection.findOne({ trail_id: trailId }).then(document => {
+        if (!document) {
             res.json({});
         } else {
             res.json(document.bulletinPosts);
@@ -76,34 +76,83 @@ app.post("/postBulletinMessage/:trailId", (req, res, next) => {
 });
 
 //get specific trail based on id
-app.get("/trails/:trailId", (req, res) => {
-    connectToDb();
+app.get("/trails/:trailId", async (req, res) => {
+    await connectToDb();
     printTimestampMessage("Request for trail " + req.params.trailId + " received.")
     var trail = trail_data.find(trail => trail.trail_id == req.params.trailId);
-    if(trail) {
+    if (trail) {
         res.json(trail);
     } else {
         res.send("No trail found with the id: " + req.params.trailId);
     }
 });
 
-app.get("/getWeatherData/:location", (req, res) => {
-    var startDate = '2020-04-12T00:00:00';
-    var endDate = '2020-04-13T00:00:00';
-    var location = req.params.location;
-    var key = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
+app.get("/getWeatherData/:location", async (req, res) => {
+    var locationQuery = req.params.location;
 
-    axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` + 
-                `?location=${location}` + 
-                `&aggregateHours=24` + 
-                `&startDateTime=${startDate}` + 
-                `&endDateTime=${endDate}` + 
-                `&key=${key}` + 
-                `&contentType=json`).then((response) => {
-        var responseObject = response.data.locations[Object.keys(response.data.locations)[0]];
-        res.send(responseObject);
+    const locationCoordinates = await getLocationCoordinates(locationQuery);
+    //const historicalRainfallData = await getHistoricalRainfallData(locationQuery);
+    // const historicalWeatherData = await getHistoricalWeatherData(locationCoordinates.data[0]);
+    const liveWeatherData = await getLiveWeatherData(locationCoordinates.data[0]);
+    const forecastedWeatherData = await getForecastedWeatherData(locationCoordinates.data[0]);
+    res.json({
+        "forecastedWeatherData": forecastedWeatherData.data.slice(0, 5),
+        "liveWeatherData": liveWeatherData.data
     });
+});
 
+const getHistoricalRainfallData = async (location) => {
+    var startDate = '2020-04-23T00:00:00';
+    var endDate = '2020-04-24T00:00:00';
+    var visualCrossingKey = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
+    return await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` +
+        `?location=${location}` +
+        `&aggregateHours=24` +
+        `&startDateTime=${startDate}` +
+        `&endDateTime=${endDate}` +
+        `&key=${visualCrossingKey}` +
+        `&contentType=json`);
+};
+
+const getLocationCoordinates = async (locationQuery) => {
+    var locationIqKey = '01edee523b4595';
+    return await axios.get(`https://us1.locationiq.com/v1/search.php?key=${locationIqKey}&q=${locationQuery}&format=json`);
+};
+
+// const getHistoricalWeatherData = async (locationCoordinates) => {
+//     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
+//     var lat = locationCoordinates.lat;
+//     var lon = locationCoordinates.lon;
+//     var url = `https://api.climacell.co/v3/weather/historical/station?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=temp&unit_system=us`;
+//     return await axios.get(url);
+// };
+
+const getLiveWeatherData = async (locationCoordinates) => {
+    var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
+    var lat = locationCoordinates.lat;
+    var lon = locationCoordinates.lon;
+    var fieldsArray = ["temp", "weather_code", "wind_speed", "wind_direction", "precipitation"];
+    var url = `https://api.climacell.co/v3/weather/realtime?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=${fieldsArray}&unit_system=us`;
+    return await axios.get(url);
+};
+
+const getForecastedWeatherData = async (locationCoordinates) => {
+    var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
+    var lat = locationCoordinates.lat;
+    var lon = locationCoordinates.lon;
+    var fieldsArray = ["temp"]
+    var url = `https://api.climacell.co/v3/weather/forecast/daily?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=${fieldsArray}&unit_system=us`;
+    return await axios.get(url);
+};
+
+app.get("/getLocationCoordinates/:locationQuery", (req, res) => {
+    var locationIqKey = '01edee523b4595';
+    axios.get(`https://us1.locationiq.com/v1/search.php?key=${locationIqKey}&q=${req.params.locationQuery}&format=json`).then((response) => {
+        res.send({
+            "lat": response.data[0].lat,
+            "lon": response.data[0].lon
+        });
+    });
 });
 
 app.listen(port, () => {

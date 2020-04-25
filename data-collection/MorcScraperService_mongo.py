@@ -31,7 +31,8 @@ def scrape_for_trail_data():
 
     keys = ["name", "condition", "comments", "username", 
             "timestamp", "parsedTimestamp", "location", 
-            "trailforksMapId", "reimtbX", "reimtbY", "trail_id"]
+            "trailforksMapId", "reimtbX", "reimtbY", 
+            "trail_id", "lat", "lon"]
 
     with open('./utility-data/static_location_data.json') as infile:
         location_data = json.load(infile);
@@ -48,6 +49,8 @@ def scrape_for_trail_data():
             parsed_data_obj.append(location_data[parsed_data_obj[0]].get("reimtbX"))
             parsed_data_obj.append(location_data[parsed_data_obj[0]].get("reimtbY"))
             parsed_data_obj.append(location_data[parsed_data_obj[0]].get("trail_id"))
+            parsed_data_obj.append(location_data[parsed_data_obj[0]].get("lat"))
+            parsed_data_obj.append(location_data[parsed_data_obj[0]].get("lon"))
             parsed_data_obj = dict(zip(keys, parsed_data_obj))
             parsed_trail_info.append(parsed_data_obj)
 
