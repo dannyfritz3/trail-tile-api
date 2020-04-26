@@ -146,9 +146,7 @@ const getForecastedWeatherData = async (locationCoordinates) => {
 // };
 // cd data-collection & python3 MorcScraperService_mongo.py
 setInterval(() => {
-    child = exec('cd data-collection ; python3 MorcScraperService_mongo.py', (error, stdout, stderr) => {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
+    child = exec('cd data-collection ; python3 MorcScraperService_mongo.py', (error) => {
         if(error !== null) {
             console.log('exec error: ' + error);
         }
