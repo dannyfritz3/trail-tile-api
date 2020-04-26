@@ -89,8 +89,8 @@ app.get("/trails/:trailId", async (req, res) => {
 
 app.get("/getWeatherData/:location", async (req, res) => {
     var locationQuery = req.params.location;
-
     const locationCoordinates = await getLocationCoordinates(locationQuery);
+    printTimestampMessage("Request for trail weather data requested for location \"" + locationQuery + "\" received.")
     //const historicalRainfallData = await getHistoricalRainfallData(locationQuery);
     // const historicalWeatherData = await getHistoricalWeatherData(locationCoordinates.data[0]);
     const liveWeatherData = await getLiveWeatherData(locationCoordinates.data[0]);
@@ -101,31 +101,10 @@ app.get("/getWeatherData/:location", async (req, res) => {
     });
 });
 
-const getHistoricalRainfallData = async (location) => {
-    var startDate = '2020-04-23T00:00:00';
-    var endDate = '2020-04-24T00:00:00';
-    var visualCrossingKey = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
-    return await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` +
-        `?location=${location}` +
-        `&aggregateHours=24` +
-        `&startDateTime=${startDate}` +
-        `&endDateTime=${endDate}` +
-        `&key=${visualCrossingKey}` +
-        `&contentType=json`);
-};
-
 const getLocationCoordinates = async (locationQuery) => {
     var locationIqKey = '01edee523b4595';
     return await axios.get(`https://us1.locationiq.com/v1/search.php?key=${locationIqKey}&q=${locationQuery}&format=json`);
 };
-
-// const getHistoricalWeatherData = async (locationCoordinates) => {
-//     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
-//     var lat = locationCoordinates.lat;
-//     var lon = locationCoordinates.lon;
-//     var url = `https://api.climacell.co/v3/weather/historical/station?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=temp&unit_system=us`;
-//     return await axios.get(url);
-// };
 
 const getLiveWeatherData = async (locationCoordinates) => {
     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
@@ -140,20 +119,30 @@ const getForecastedWeatherData = async (locationCoordinates) => {
     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
     var lat = locationCoordinates.lat;
     var lon = locationCoordinates.lon;
-    var fieldsArray = ["temp"]
+    var fieldsArray = ["temp", "weather_code"]
     var url = `https://api.climacell.co/v3/weather/forecast/daily?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=${fieldsArray}&unit_system=us`;
     return await axios.get(url);
 };
 
-app.get("/getLocationCoordinates/:locationQuery", (req, res) => {
-    var locationIqKey = '01edee523b4595';
-    axios.get(`https://us1.locationiq.com/v1/search.php?key=${locationIqKey}&q=${req.params.locationQuery}&format=json`).then((response) => {
-        res.send({
-            "lat": response.data[0].lat,
-            "lon": response.data[0].lon
-        });
-    });
-});
+// const getHistoricalWeatherData = async (locationCoordinates) => {
+//     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
+//     var lat = locationCoordinates.lat;
+//     var lon = locationCoordinates.lon;
+//     var url = `https://api.climacell.co/v3/weather/historical/station?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=temp&unit_system=us`;
+//     return await axios.get(url);
+// };
+// const getHistoricalRainfallData = async (location) => {
+//     var startDate = '2020-04-23T00:00:00';
+//     var endDate = '2020-04-24T00:00:00';
+//     var visualCrossingKey = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
+//     return await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` +
+//         `?location=${location}` +
+//         `&aggregateHours=24` +
+//         `&startDateTime=${startDate}` +
+//         `&endDateTime=${endDate}` +
+//         `&key=${visualCrossingKey}` +
+//         `&contentType=json`);
+// };
 
 app.listen(port, () => {
     console.log("Server running on port " + port);
