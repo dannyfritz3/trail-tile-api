@@ -1,6 +1,7 @@
 var axios = require('axios');
 var express = require('express');
 const { MongoClient } = require('mongodb');
+var exec = require('child_process').exec, child;
 var app = express();
 const port = process.env.PORT || 4000;
 var bodyParser = require('body-parser');
@@ -143,6 +144,17 @@ const getForecastedWeatherData = async (locationCoordinates) => {
 //         `&key=${visualCrossingKey}` +
 //         `&contentType=json`);
 // };
+// cd data-collection & python3 MorcScraperService_mongo.py
+setInterval(() => {
+    child = exec('cd data-collection ; python3 MorcScraperService_mongo.py', (error, stdout, stderr) => {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if(error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });    
+    printTimestampMessage("Databse updated.");
+}, 300000);
 
 app.listen(port, () => {
     console.log("Server running on port " + port);
