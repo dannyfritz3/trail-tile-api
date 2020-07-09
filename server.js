@@ -24,9 +24,6 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const printTimestampMessage = (message) => {
-    console.log(new Date().toString() + ": " + message);
-}
 //ping test
 app.get("/ping", (req, res, next) => {
     res.sendStatus(200);
@@ -89,13 +86,19 @@ app.get("/trails/:trailId", async (req, res) => {
 });
 
 app.get("/getWeatherData/:location", async (req, res) => {
-    var locationQuery = req.params.location;
-    const locationCoordinates = await getLocationCoordinates(locationQuery);
-    printTimestampMessage("Request for trail weather data requested for location \"" + locationQuery + "\" received.")
-    //const historicalRainfallData = await getHistoricalRainfallData(locationQuery);
-    // const historicalWeatherData = await getHistoricalWeatherData(locationCoordinates.data[0]);
+    printTimestampMessage("Request for trail weather data requested for location \"" + req.params.location + "\" received.")
+    var startTimer = Date.now();
+    const locationCoordinates = await getLocationCoordinates(req.params.location);
+    var endTimer = Date.now();
+    console.log("Time taken to receive coordinates: " + (endTimer - startTimer) + "ms");
+    startTimer = Date.now();
     const liveWeatherData = await getLiveWeatherData(locationCoordinates.data[0]);
+    endTimer = Date.now();
+    console.log("Time taken to receive live weather data: " + (endTimer - startTimer) + "ms");
+    startTimer = Date.now();
     const forecastedWeatherData = await getForecastedWeatherData(locationCoordinates.data[0]);
+    endTimer = Date.now();
+    console.log("Time taken to receive forecasted weather data: " + (endTimer - startTimer) + "ms");
     res.json({
         "forecastedWeatherData": forecastedWeatherData.data.slice(0, 5),
         "liveWeatherData": liveWeatherData.data
@@ -120,31 +123,15 @@ const getForecastedWeatherData = async (locationCoordinates) => {
     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
     var lat = locationCoordinates.lat;
     var lon = locationCoordinates.lon;
-    var fieldsArray = ["temp", "weather_code"]
+    var fieldsArray = ["temp", "weather_code", "wind_speed", "wind_direction", "precipitation_accumulation"]
     var url = `https://api.climacell.co/v3/weather/forecast/daily?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=${fieldsArray}&unit_system=us`;
     return await axios.get(url);
 };
 
-// const getHistoricalWeatherData = async (locationCoordinates) => {
-//     var climacellKey = '1OwEaPcEHqfKpUTeHZUfMOyK3nyz3PcY';
-//     var lat = locationCoordinates.lat;
-//     var lon = locationCoordinates.lon;
-//     var url = `https://api.climacell.co/v3/weather/historical/station?apikey=${climacellKey}&lat=${lat}&lon=${lon}&fields=temp&unit_system=us`;
-//     return await axios.get(url);
-// };
-// const getHistoricalRainfallData = async (location) => {
-//     var startDate = '2020-04-23T00:00:00';
-//     var endDate = '2020-04-24T00:00:00';
-//     var visualCrossingKey = 'EKWA22NR2A9RY0MHJ4C3MJFJG';
-//     return await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/history` +
-//         `?location=${location}` +
-//         `&aggregateHours=24` +
-//         `&startDateTime=${startDate}` +
-//         `&endDateTime=${endDate}` +
-//         `&key=${visualCrossingKey}` +
-//         `&contentType=json`);
-// };
-// cd data-collection & python3 MorcScraperService_mongo.py
+const printTimestampMessage = (message) => {
+    console.log(new Date().toString() + ": " + message);
+};
+
 setInterval(() => {
     child = exec('cd data-collection ; python3 MorcScraperService_mongo.py', (error) => {
         if(error !== null) {
@@ -152,7 +139,7 @@ setInterval(() => {
         }
     });    
     printTimestampMessage("Databse updated.");
-}, 300000);
+}, 10000);
 
 app.listen(port, () => {
     console.log("Server running on port " + port);
