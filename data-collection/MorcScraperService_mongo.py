@@ -34,7 +34,7 @@ def scrape_for_trail_data():
             "trailforksMapId", "reimtbX", "reimtbY", 
             "trail_id", "lat", "lon"]
 
-    with open('./utility-data/static_location_data.json') as infile:
+    with open('./data-collection/utility-data/static_location_data.json') as infile:
         location_data = json.load(infile);
 
         for item in raw_trail_info:

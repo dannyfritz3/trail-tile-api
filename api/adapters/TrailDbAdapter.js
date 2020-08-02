@@ -3,19 +3,19 @@ const uri = 'mongodb+srv://dbUser:1234password@morc-trail-cluster-2oaql.gcp.mong
 var dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 var trail_data;
 
-const TrailDbAdapter = {
-    "connectToDb": async () => {
-        dbClient = await dbClient.connect();
-        trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
-    },
+var connectToDb = async () => {
+    dbClient = await dbClient.connect();
+    trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
+};
 
+const TrailDbAdapter = {
     "getAllTrails": async () => {
-        await TrailDbAdapter.connectToDb();
+        await connectToDb();
         return trail_data;
     },
 
     "getTrailById": async (trailId) => {
-        await TrailDbAdapter.connectToDb();
+        await connectToDb();
         var trail = trail_data.find(trail => trail.trail_id == trailId);
         if (trail) {
             return(trail);
@@ -53,7 +53,6 @@ const TrailDbAdapter = {
             }
         });
     }
-    
 }
 
 module.exports = TrailDbAdapter;

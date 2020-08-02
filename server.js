@@ -6,6 +6,8 @@ const trailService = require("./api/services/TrailService");
 const printTimestampMessage = require('./api/utility/PrintTimestampMessage');
 
 var exec = require('child_process').exec, child;
+var path = require('path');
+console.log(path.resolve(process.cwd(), '.'));
 var app = express();
 const port = process.env.PORT || 4000;
 var bodyParser = require('body-parser');
@@ -64,11 +66,11 @@ app.get("/getWeatherData/:location", async (req, res) => {
 });
 
 setInterval(() => {
-    child = exec('cd ./data-collection ; python MorcScraperService_mongo.py', (error) => {
+    child = exec('python ./data-collection/MorcScraperService_mongo.py', (error) => {
         if(error !== null) {
             console.log('EXECUTION ERROR: ' + error);
         }
-    });    
+    });       
     printTimestampMessage("Databse updated.");
 }, 10000);
 
