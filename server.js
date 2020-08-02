@@ -6,8 +6,6 @@ const trailService = require("./api/services/TrailService");
 const printTimestampMessage = require('./api/utility/PrintTimestampMessage');
 
 var exec = require('child_process').exec, child;
-var path = require('path');
-console.log(path.resolve(process.cwd(), '.'));
 var app = express();
 const port = process.env.PORT || 4000;
 var bodyParser = require('body-parser');
