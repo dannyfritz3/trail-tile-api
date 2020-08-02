@@ -9,7 +9,6 @@ var exec = require('child_process').exec, child;
 var app = express();
 const port = process.env.PORT || 4000;
 var bodyParser = require('body-parser');
-const { Cipher } = require('crypto');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -55,18 +54,9 @@ app.get("/getTrailById/:trailId", async (req, res) => {
 
 app.get("/getWeatherData/:location", async (req, res) => {
     printTimestampMessage("Request for trail weather data requested for location \"" + req.params.location + "\" received.")
-    var startTimer = Date.now();
-    const locationCoordinates = await locationService.getLocationCoordinates(req.params.location);
-    var endTimer = Date.now();
-    console.log("Time taken to receive coordinates: " + (endTimer - startTimer) + "ms");
-    startTimer = Date.now();
+    const locationCoordinates = await locationService.getLocationCoordinates(req.params.location)
     const liveWeatherData = await weatherService.getWeatherDataByCoordinates(locationCoordinates.data[0]);
-    endTimer = Date.now();
-    console.log("Time taken to receive live weather data: " + (endTimer - startTimer) + "ms");
-    startTimer = Date.now();
     const forecastedWeatherData = await weatherService.getForecastedWeatherData(locationCoordinates.data[0]);
-    endTimer = Date.now();
-    console.log("Time taken to receive forecasted weather data: " + (endTimer - startTimer) + "ms");
     res.json({
         "forecastedWeatherData": forecastedWeatherData.data.slice(0, 5),
         "liveWeatherData": liveWeatherData.data
