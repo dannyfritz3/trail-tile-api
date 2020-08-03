@@ -1,7 +1,5 @@
-var axios = require('axios');
 var express = require('express');
 const weatherService = require("./api/services/WeatherService");
-const locationService = require("./api/services/LocationService");
 const trailService = require("./api/services/TrailService");
 const printTimestampMessage = require('./api/utility/PrintTimestampMessage');
 
@@ -26,7 +24,8 @@ app.get("/ping", (req, res, next) => {
 //get all trails
 app.get("/getAllTrails", async (req, res, next) => {
     printTimestampMessage("getAllTrails requested.");
-    var trailDataResponse = await trailService.getAllTrails()
+    var trailDataResponse = await trailService.getAllTrails();
+
     res.json(trailDataResponse);
 });
 
@@ -34,6 +33,7 @@ app.get("/getAllTrails", async (req, res, next) => {
 app.get("/getBulletinBoard/:trailId", async (req, res, next) => {
     printTimestampMessage("getBulletinBoardByTrailId requested.");
     var bulletinBoard_json = await trailService.getBulletinBoardByTrailId(req.params.trailId);
+
     res.json(bulletinBoard_json);
 });
 
@@ -43,24 +43,23 @@ app.post("/postBulletinMessage/:trailId", (req, res, next) => {
     var bulletinPost = req.body;
     trailService.postBulletinMessage(trailId, bulletinPost)
     printTimestampMessage("Post request recieved: " + req.body);
+
+    res.sendStatus(200);
 });
 
 //get specific trail based on id
 app.get("/getTrailById/:trailId", async (req, res) => {
     printTimestampMessage("Request for trail " + req.params.trailId + " received.")
     var trail_json = await trailService.getTrailById(req.params.trailId);
+
     res.json(trail_json);
 });
 
-app.get("/getWeatherData/:location", async (req, res) => {
+app.get("/getWeatherDataByLocationString/:location", async (req, res) => {
     printTimestampMessage("Request for trail weather data requested for location \"" + req.params.location + "\" received.")
-    const locationCoordinates = await locationService.getLocationCoordinates(req.params.location)
-    const liveWeatherData = await weatherService.getWeatherDataByCoordinates(locationCoordinates.data[0]);
-    const forecastedWeatherData = await weatherService.getForecastedWeatherData(locationCoordinates.data[0]);
-    res.json({
-        "forecastedWeatherData": forecastedWeatherData.data.slice(0, 5),
-        "liveWeatherData": liveWeatherData.data
-    });
+    var weatherData = await weatherService.getWeatherDataByLocationName(req.params.location);
+
+    res.json(weatherData);
 });
 
 setInterval(() => {

@@ -1,12 +1,23 @@
 var weatherAdapter = require("../adapters/WeatherAdapter");
+var locationService = require("./LocationService");
 
 const WeatherService = {
-    "getWeatherDataByCoordinates": async (locationCoordinates) => {
-        return weatherAdapter.getWeatherDataByCoordinates(locationCoordinates);
+    "getWeatherDataByLocationName": async (locationName) => {
+        const locationCoordinates = await locationService.getLocationCoordinates(req.params.location);
+        const forecastedWeatherData = await weatherAdapter.getForecastedWeatherDataByCoordinates(locationCoordinates.data[0]);
+        const liveWeatherData = await weatherAdapter.getLiveWeatherDataByCoordinates(locationCoordinates.data[0]);
+
+        return {
+            "forecastedWeatherData": forecastedWeatherData.data.slice(0, 5),
+            "liveWeatherData": liveWeatherData.data
+        }
     },
 
-    "getForecasterWeatherData": async (locationCoordinates) => {
-        return weatherAdapter.getForecastedWeatherData(locationCoordinates);
+    "getWeatherDataByLocationCoordinates": async (locationCoordinates) => {
+        return {
+            "forecastedWeatherData": await weatherAdapter.getForecastedWeatherDataByCoordinates(locationCoordinates),
+            "liveWeatherData": await weatherAdapter.getLiveWeatherDataByCoordinates(locationCoordinates)
+        }
     }
 };
 
