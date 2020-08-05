@@ -9,10 +9,19 @@ var connectToDb = async () => {
 };
 
 const TrailDbAdapter = {
-    "getAllTrails": async () => {
-        await connectToDb();
-        return trail_data;
-    },
+    // "getAllTrails": async () => {
+    //     await connectToDb();
+    //     var GetAllTrailsResponse = new GetAllTrailsResponse();
+    //     for(var trail in trail_data) {
+    //         var trailModel = new Trail({
+    //             name: trail.name,
+    //             condition: trail.condition,
+    //             comments: trail.comments,
+    //             username:
+    //         });
+    //     }
+    //     return trail_data;
+    // },
 
     "getTrailById": async (trailId) => {
         await connectToDb();

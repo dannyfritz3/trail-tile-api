@@ -23,7 +23,7 @@
     "express": "^4.17.1",
     "jssoup": "0.0.12",
     "mongodb": "^3.5.5",
-    "mongoose": "^5.9.5"
+    "mongoose": "^5.9.27"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

@@ -62,14 +62,14 @@ app.get("/getWeatherDataByLocationString/:location", async (req, res) => {
     res.json(weatherData);
 });
 
-setInterval(() => {
-    child = exec('python ./data-collection/MorcScraperService_mongo.py', (error) => {
-        if(error !== null) {
-            console.log('EXECUTION ERROR: ' + error);
-        }
-    });       
-    printTimestampMessage("Databse updated.");
-}, 10000);
+// setInterval(() => {
+//     child = exec('python ./data-collection/MorcScraperService_mongo.py', (error) => {
+//         if(error !== null) {
+//             console.log('EXECUTION ERROR: ' + error);
+//         }
+//     });       
+//     printTimestampMessage("Databse updated.");
+// }, 10000);
 
 app.listen(port, () => {
     console.log("Server running on port " + port);
