@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var mongoDB = 'mongodb://dbUser:1234password@morc-trail-cluster-shard-00-00-2oaql.gcp.mongodb.net:27017,morc-trail-cluster-shard-00-01-2oaql.gcp.mongodb.net:27017,morc-trail-cluster-shard-00-02-2oaql.gcp.mongodb.net:27017/<dbname>?ssl=true&replicaSet=MORC-TRAIL-CLUSTER-shard-0&authSource=admin&retryWrites=true&w=majority'
 var dbClient = mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true });
 
-mongoose.connect()
+mongoose.connect("test");
 var connectToDb = async () => {
     //dbClient = await dbClient.connect();
     trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
