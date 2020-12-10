@@ -1,27 +1,34 @@
-const { MongoClient } = require('mongodb');
-const uri = 'mongodb+srv://dbUser:1234password@morc-trail-cluster-2oaql.gcp.mongodb.net/test?retryWrites=true&w=majority';
-var dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const { MongoClient } = require('mongodb');
+// const uri = 'mongodb+srv://dbUser:1234password@morc-trail-cluster-2oaql.gcp.mongodb.net/test?retryWrites=true&w=majority';
+// var dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 var trail_data;
 
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb://dbUser:1234password@morc-trail-cluster-shard-00-00-2oaql.gcp.mongodb.net:27017,morc-trail-cluster-shard-00-01-2oaql.gcp.mongodb.net:27017,morc-trail-cluster-shard-00-02-2oaql.gcp.mongodb.net:27017/<dbname>?ssl=true&replicaSet=MORC-TRAIL-CLUSTER-shard-0&authSource=admin&retryWrites=true&w=majority'
+var dbClient = mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect()
 var connectToDb = async () => {
-    dbClient = await dbClient.connect();
+    //dbClient = await dbClient.connect();
     trail_data = await dbClient.db('trail_data').collection('trails').find({}).toArray();
 };
 
 const TrailDbAdapter = {
-    // "getAllTrails": async () => {
-    //     await connectToDb();
-    //     var GetAllTrailsResponse = new GetAllTrailsResponse();
-    //     for(var trail in trail_data) {
-    //         var trailModel = new Trail({
-    //             name: trail.name,
-    //             condition: trail.condition,
-    //             comments: trail.comments,
-    //             username:
-    //         });
-    //     }
-    //     return trail_data;
-    // },
+    "getAllTrails": async () => {
+        await connectToDb();
+        // var GetAllTrailsResponse = new GetAllTrailsResponse();
+        // for(var trail in trail_data) {
+        //     var trailModel = new Trail({
+        //         name: "test",
+        //         condition: "test",
+        //         comments: "test",
+        //         username: "test"
+        //     });
+        //     GetAllTrailsResponse.trailList.push(trailModel);
+        // }
+        // return GetAllTrailsResponse;
+        mongoose.model('users', {name: String});
+    },
 
     "getTrailById": async (trailId) => {
         await connectToDb();

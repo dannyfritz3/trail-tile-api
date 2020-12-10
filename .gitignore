@@ -39,6 +39,9 @@ build/Release
 
 # Dependency directories
 node_modules/
+
+.elasticbeanstalk/
+
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -102,3 +105,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
