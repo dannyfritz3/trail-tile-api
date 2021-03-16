@@ -3,7 +3,7 @@ var locationService = require("./LocationService");
 
 const WeatherService = {
     "getWeatherDataByLocationName": async (locationName) => {
-        const locationCoordinates = await locationService.getLocationCoordinates(req.params.location);
+        const locationCoordinates = await locationService.getLocationCoordinates(locationName);
         const forecastedWeatherData = await weatherAdapter.getForecastedWeatherDataByCoordinates(locationCoordinates.data[0]);
         const liveWeatherData = await weatherAdapter.getLiveWeatherDataByCoordinates(locationCoordinates.data[0]);
 
@@ -14,9 +14,11 @@ const WeatherService = {
     },
 
     "getWeatherDataByLocationCoordinates": async (locationCoordinates) => {
+        const forecastedWeatherData = await weatherAdapter.getForecastedWeatherDataByCoordinates(locationCoordinates);
+        const liveWeatherData = await weatherAdapter.getLiveWeatherDataByCoordinates(locationCoordinates);
         return {
-            "forecastedWeatherData": await weatherAdapter.getForecastedWeatherDataByCoordinates(locationCoordinates),
-            "liveWeatherData": await weatherAdapter.getLiveWeatherDataByCoordinates(locationCoordinates)
+            "forecastedWeatherData": forecastedWeatherData.slice(0,5),
+            "liveWeatherData": liveWeatherData
         }
     }
 };

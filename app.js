@@ -62,6 +62,18 @@ app.get("/getWeatherDataByLocationString/:location", async (req, res) => {
     res.json(weatherData);
 });
 
+app.get("/getWeatherDataByCoordinates/:lon/:lat", async (req, res) => {
+    printTimestampMessage("Request for trail weather data requested for coordinates \"" + req.params.lat + ", " + req.params.lon + "\" received.")
+    var coordinates = 
+    {
+        "lat": req.params.lat, 
+        "lon": req.params.lon
+    }
+    var weatherData = await weatherService.getWeatherDataByLocationCoordinates(coordinates);
+
+    res.json(weatherData);
+});
+
 // setInterval(() => {
 //     child = exec('python ./data-collection/MorcScraperService_mongo.py', (error) => {
 //         if(error !== null) {
